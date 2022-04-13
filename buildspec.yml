@@ -1,5 +1,8 @@
 version: 0.2
 
+env:
+  REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+  REACT_APP_CLIENT_URL: ${{ secrets.REACT_APP_CLIENT_URL }}
 phases:
   pre_build:
     commands:
