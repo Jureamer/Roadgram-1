@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { faCommentDots, faEye, faHeart } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMainArticles } from '../store/ArticleSlice'
 import { RootState } from '..'
 import { detailInfo } from '../store/ArticleDetailSlice'
 import { resetCreatePost } from '../store/createPostSlice'
@@ -17,8 +15,6 @@ function Article() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { mainArticles } = useSelector((state: RootState) => state.articles)
-  const { userInfo } = useSelector((state: RootState) => state.auth)
-  const { targetId, writerInfo, articleInfo } = useSelector((state: RootState) => state.articleDetails)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {

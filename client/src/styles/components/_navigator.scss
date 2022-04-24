@@ -134,11 +134,20 @@
 
 
     .infoIcon {
-      height: 3vmin;
+      height: 3rem;
       color: rgb(80, 78, 78);
       cursor: pointer;
       margin-right: 2vmin;
       transition: 0.2s;
+      @include mobile-only {
+        height: 2rem;
+      }
+      @include md { 
+        height: 2rem;
+      }
+      @include lg {
+        height: 3rem;
+      }
     }
     .infoIcon:hover {
       color: gray;
