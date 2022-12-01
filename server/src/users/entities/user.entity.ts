@@ -28,7 +28,7 @@ export class User {
   @Column({ nullable: true, default: null })
   password: string;
 
-  @Column({ default: '', name: "status_message" })
+  @Column({ default: 'nothing', name: "status_message" })
   statusMessage: string;
 
   @Column({ default: 'https://ootd13image.s3.ap-northeast-2.amazonaws.com/emptyprofile.png', name: 'profile_image' })

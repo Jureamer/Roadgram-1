@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Inject, Injectable, LoggerService, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmailDto, IdDto, KakaoLoginDto, LoginDto, NicknameDto } from './dto/login.dto';
@@ -15,6 +15,7 @@ import { User } from './entities/user.entity';
 import { FollowRepository } from 'src/follow/repositories/follow.repository';
 import { LikesRepository } from 'src/likes/repositories/likes.repository';
 import { CommentRepository } from 'src/comments/repositories/comments.repository';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 require('dotenv').config();
 
 @Injectable()
@@ -34,8 +35,9 @@ export class UsersService {
         private likesRepository: LikesRepository,
         @InjectRepository(CommentRepository)
         private commentsRepository: (CommentRepository),
-        private jwtService: JwtService
-    ) { }
+        private jwtService: JwtService,
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService,
+        ) { }
 
     async checkEmail({ email }: EmailDto) {
         const isValid = await this.userRepository.findOne({ email });
@@ -137,7 +139,7 @@ export class UsersService {
         if (loginMethod === 0) {
             try {
                 const tokenInfo = await this.jwtService.verifyAsync(accessToken);
-                console.log("tokenInfo", tokenInfo);
+                this.logger.log("tokenInfo", tokenInfo);
                 return tokenInfo.email === userInfo.email;
 
             } catch {
@@ -196,15 +198,15 @@ export class UsersService {
 
     async getTokenKakao({ code }: KakaoLoginDto) {
         try {
-            console.log("code", code);
+            this.logger.log("code", code);
             const tokenRequest = await axios.post(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code=${code}`,
                 { headers: { 'Content-Type': "application/x-www-form-urlencoded" } }
             );
-            console.log("tokenRequest", tokenRequest);
+            this.logger.log("tokenRequest", tokenRequest);
             const userInfoKakao = await axios.get('https://kapi.kakao.com/v2/user/me',
                 { headers: { 'Authorization': `Bearer ${tokenRequest.data.access_token}` } }
             );
-            console.log("userInfoKakao", userInfoKakao);
+            this.logger.log("userInfoKakao", userInfoKakao);
             const userInfo = await this.userRepository.findOne({ email: userInfoKakao.data.kakao_account.email });
             if (!userInfo) {
                 const user: User = this.userRepository.create({
