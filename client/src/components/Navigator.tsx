@@ -60,7 +60,6 @@ function Navigator() {
       // 테스트를 위해 로그아웃 강제 처리
       resetAllState()
       setUsericonCLick(!usericonClick)
-      console.log('logout error')
     }
   }
 

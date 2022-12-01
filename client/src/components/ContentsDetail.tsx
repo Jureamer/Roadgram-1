@@ -82,7 +82,6 @@ function ContentsDetail() {
           }
         }
       ).then(res => {
-        console.log(res.data)
         dispatch(addComment(res.data.data));
         dispatch(updateTotalComments(res.data.data.totalComments));
         setComment('');
@@ -128,7 +127,6 @@ function ContentsDetail() {
         }
       }
     ).then(res => {
-      console.log(res.data);
       // dispatch(changeComment(res.data));
       setIsUpdatable(false);
       setTargetCommentId(0);
@@ -193,7 +191,7 @@ function ContentsDetail() {
   }, [handleScroll])
 
   
-  console.log(page,endScroll)
+  // console.log(page,endScroll)
 
   return (
     <div className="detail-container">
