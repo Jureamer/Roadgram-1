@@ -27,6 +27,7 @@ import * as winston from 'winston';
         new winston.transports.Console({
           level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
           format: winston.format.combine(
+            winston.format.colorize(),
             winston.format.timestamp(),
             nestWinstonModuleUtilities.format.nestLike('MyApp', { prettyPrint: true })
           ),
