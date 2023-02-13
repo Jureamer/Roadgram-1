@@ -1,4 +1,14 @@
-import { BadRequestException, ConflictException, ForbiddenException, Inject, Injectable, LoggerService, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    ForbiddenException,
+    Inject,
+    Injectable,
+    InternalServerErrorException,
+    LoggerService,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmailDto, IdDto, KakaoLoginDto, LoginDto, NicknameDto } from './dto/login.dto';
@@ -16,7 +26,6 @@ import { FollowRepository } from 'src/follow/repositories/follow.repository';
 import { LikesRepository } from 'src/likes/repositories/likes.repository';
 import { CommentRepository } from 'src/comments/repositories/comments.repository';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-require('dotenv').config();
 
 @Injectable()
 export class UsersService {
@@ -34,36 +43,33 @@ export class UsersService {
         @InjectRepository(LikesRepository)
         private likesRepository: LikesRepository,
         @InjectRepository(CommentRepository)
-        private commentsRepository: (CommentRepository),
+        private commentsRepository: CommentRepository,
         private jwtService: JwtService,
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService,
-        ) { }
+    ) {}
 
     async checkEmail({ email }: EmailDto) {
         const isValid = await this.userRepository.findOne({ email });
         if (isValid) {
-            throw new ConflictException('not available')
-        }
-        else return { message: 'available' }
+            throw new ConflictException('not available');
+        } else return { message: 'available' };
     }
 
     async checkNickname({ nickname }: NicknameDto) {
         const isValid = await this.userRepository.findOne({ nickname });
         if (isValid) {
-            throw new ConflictException('not available')
-        }
-        else return { message: 'available' }
+            throw new ConflictException('not available');
+        } else return { message: 'available' };
     }
 
     async login(loginDto: LoginDto) {
         const userInfo = await this.userRepository.findOne({
             loginMethod: 0,
-            email: loginDto.email
-        })
-        if (!userInfo || !await bcrypt.compare(loginDto.password, userInfo.password)) {
-            throw new NotFoundException('login fail')
-        }
-        else {
+            email: loginDto.email,
+        });
+        if (!userInfo || !(await bcrypt.compare(loginDto.password, userInfo.password))) {
+            throw new NotFoundException('login fail');
+        } else {
             const accessToken = this.jwtService.sign({ email: loginDto.email }, { expiresIn: '12h' });
             const refreshToken = this.jwtService.sign({ email: loginDto.email }, { expiresIn: '720h' });
             this.userRepository.putRefreshToken(userInfo.id, refreshToken);
@@ -75,11 +81,11 @@ export class UsersService {
                         id: userInfo.id,
                         nickname: userInfo.nickname,
                         loginMethod: userInfo.loginMethod,
-                        profileImage: userInfo.profileImage
-                    }
+                        profileImage: userInfo.profileImage,
+                    },
                 },
-                message: 'login ok'
-            }
+                message: 'login ok',
+            };
         }
     }
 
@@ -89,9 +95,8 @@ export class UsersService {
             this.userRepository.deleteRefreshToken(id);
             return { message: 'logout succeed' };
         } catch {
-            throw new NotFoundException("cannot find user")
+            throw new NotFoundException('cannot find user');
         }
-
     }
 
     signup(createUserDto: CreateUserDto) {
@@ -100,36 +105,35 @@ export class UsersService {
 
     async deleteUser(idDto: IdDto) {
         const id: number = idDto.user;
-        this.userRepository.deleteUser(id);// 일단 유저 삭제
-        const followers = await this.followRepository.getFollowedIds(id);// 팔로우 한 사람들 아이디
-        const followings = await this.followRepository.getFollowingIds(id);// 팔로잉 한 사람들 아이디
-        const likes = await this.likesRepository.articleIdsByUserId(id);// 좋아요 누른 아티클 아이디
-        const comments = await this.commentsRepository.getCommentsByUserId(id);// 댓글 단 아티클 아이디
+        this.userRepository.deleteUser(id); // 일단 유저 삭제
+        const followers = await this.followRepository.getFollowedIds(id); // 팔로우 한 사람들 아이디
+        const followings = await this.followRepository.getFollowingIds(id); // 팔로잉 한 사람들 아이디
+        const likes = await this.likesRepository.articleIdsByUserId(id); // 좋아요 누른 아티클 아이디
+        const comments = await this.commentsRepository.getCommentsByUserId(id); // 댓글 단 아티클 아이디
         // 각각 forEach 함수로 하나 당 하나 씩 숫자 감소 시키기
-        followers.forEach(async (followerId) => {
+        followers.forEach(async followerId => {
             const follower = await this.userRepository.findOne({ id: followerId });
             this.userRepository.update({ id: followerId }, { totalFollower: follower.totalFollower - 1 });
-        })
-        followings.forEach(async (followingId) => {
+        });
+        followings.forEach(async followingId => {
             const following = await this.userRepository.findOne({ id: followingId });
             this.userRepository.update({ id: followingId }, { totalFollowing: following.totalFollowing - 1 });
-        })
-        likes.forEach(async (articleId) => {
+        });
+        likes.forEach(async articleId => {
             const article = await this.articleRepository.findOne({ id: articleId });
             this.articleRepository.update({ id: articleId }, { totalLike: article.totalLike - 1 });
-        })
-        comments.forEach(async (articleId) => {
+        });
+        comments.forEach(async articleId => {
             const article = await this.articleRepository.findOne({ id: articleId });
             this.articleRepository.update({ id: articleId }, { totalComment: article.totalComment - 1 });
-        })
+        });
         return { message: 'withdrawal succeed' };
     }
 
     modifyUser(userData: UpdateUserDto) {
         if (userData.loginMethod !== 0 && userData.password) {
             throw new BadRequestException('bad request');
-        }
-        else return this.userRepository.updateUser(userData);
+        } else return this.userRepository.updateUser(userData);
     }
 
     async validateToken(authDto: AuthDto) {
@@ -139,18 +143,16 @@ export class UsersService {
         if (loginMethod === 0) {
             try {
                 const tokenInfo = await this.jwtService.verifyAsync(accessToken);
-                this.logger.log("tokenInfo", tokenInfo);
+                this.logger.log('tokenInfo', tokenInfo);
                 return tokenInfo.email === userInfo.email;
-
             } catch {
                 throw new UnauthorizedException('request new access token');
             }
-        }
-        else if (loginMethod === 1) {
+        } else if (loginMethod === 1) {
             try {
-                const userInfoKakao = await axios.get('https://kapi.kakao.com/v2/user/me',
-                    { headers: { 'Authorization': `Bearer ${accessToken}` } }
-                );
+                const userInfoKakao = await axios.get('https://kapi.kakao.com/v2/user/me', {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
                 return userInfoKakao.data.kakao_account.email === userInfo.email;
             } catch {
                 throw new UnauthorizedException('request new access token');
@@ -172,41 +174,57 @@ export class UsersService {
                 const accessToken = this.jwtService.sign({ email: userInfo.email }, { expiresIn: '12h' });
                 return {
                     data: { accessToken },
-                    message: 'new access token'
-                }
+                    message: 'new access token',
+                };
             } catch {
                 this.userRepository.deleteRefreshToken(id);
                 throw new UnauthorizedException('refresh token expired');
             }
-        }
-        else if (loginMethod === 1) {
+        } else if (loginMethod === 1) {
             try {
-                const tokenRequest = await axios.post(`https://kauth.kakao.com/oauth/token?grant_type=refresh_token&client_id=${process.env.CLIENT_ID}&refresh_token=${refreshToken}`,
-                    { headers: { 'Content-Type': "application/x-www-form-urlencoded" } }
+                const tokenRequest = await axios.post(
+                    `https://kauth.kakao.com/oauth/token?grant_type=refresh_token&client_id=${process.env.CLIENT_ID}&refresh_token=${refreshToken}`,
+                    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
                 );
                 return {
                     data: { accessToken: tokenRequest.data.access_token },
-                    message: 'new access token'
-                }
+                    message: 'new access token',
+                };
             } catch {
                 this.userRepository.deleteRefreshToken(id);
                 throw new UnauthorizedException('refresh token expired');
             }
         }
-
     }
 
     async getTokenKakao({ code }: KakaoLoginDto) {
+        let tokenRequest;
+        let userInfoKakao;
+
+        this.logger.log(
+            `code: ${code}, client_id: ${process.env.CLIENT_ID}, redirect_uri: ${process.env.REDIRECT_URI}`,
+        );
+
         try {
-            this.logger.log("code", code);
-            const tokenRequest = await axios.post(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code=${code}`,
-                { headers: { 'Content-Type': "application/x-www-form-urlencoded" } }
+            tokenRequest = await axios.post(
+                `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code=${code}`,
+                { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
             );
-            this.logger.log("tokenRequest", tokenRequest);
-            const userInfoKakao = await axios.get('https://kapi.kakao.com/v2/user/me',
-                { headers: { 'Authorization': `Bearer ${tokenRequest.data.access_token}` } }
-            );
-            this.logger.log("userInfoKakao", userInfoKakao);
+        } catch (e) {
+            this.logger.error(e);
+            throw new InternalServerErrorException('kakao server error');
+        }
+
+        try {
+            userInfoKakao = await axios.get('https://kapi.kakao.com/v2/user/me', {
+                headers: { Authorization: `Bearer ${tokenRequest.data.access_token}` },
+            });
+        } catch (e) {
+            this.logger.error(e);
+            throw new InternalServerErrorException('kakao user find error');
+        }
+
+        try {
             const userInfo = await this.userRepository.findOne({ email: userInfoKakao.data.kakao_account.email });
             if (!userInfo) {
                 const user: User = this.userRepository.create({
@@ -215,8 +233,8 @@ export class UsersService {
                     password: null,
                     profileImage: userInfoKakao.data.properties.profile_image,
                     loginMethod: 1,
-                    refreshToken: tokenRequest.data.refresh_token
-                })
+                    refreshToken: tokenRequest.data.refresh_token,
+                });
                 const createdUserInfo = await this.userRepository.save(user);
                 return {
                     data: {
@@ -225,13 +243,12 @@ export class UsersService {
                         userInfo: {
                             id: createdUserInfo.id,
                             nickname: createdUserInfo.nickname,
-                            loginMethod: 1
-                        }
+                            loginMethod: 1,
+                        },
                     },
-                    message: 'signup successfully'
-                }
-            }
-            else {
+                    message: 'signup successfully',
+                };
+            } else {
                 await this.userRepository.putRefreshToken(userInfo.id, tokenRequest.data.refresh_token);
                 return {
                     data: {
@@ -241,14 +258,15 @@ export class UsersService {
                             id: userInfo.id,
                             nickname: userInfo.nickname,
                             loginMethod: 1,
-                            profileImage: userInfo.profileImage
-                        }
+                            profileImage: userInfo.profileImage,
+                        },
                     },
-                    message: 'login successfully'
-                }
+                    message: 'login successfully',
+                };
             }
-        } catch {
-            throw new UnauthorizedException('permission denied');
+        } catch (e) {
+            this.logger.error(e);
+            throw new UnauthorizedException('kakao login error');
         }
     }
 
@@ -265,31 +283,31 @@ export class UsersService {
             for (const article of articles) {
                 const tagIds: number[] = await this.articleToTagRepository.getTagIds(article.id);
                 let tagNames: string[] = [];
-                tagIds.forEach(async (tagId) => {
+                tagIds.forEach(async tagId => {
                     const tagName: string = await this.tagRepository.getTagNameWithIds(tagId);
                     tagNames.push(tagName);
-                })
+                });
                 article.tags = tagNames;
 
                 interface articleObject {
-                    id: string,
-                    userId:number,
-                    thumbnail: string,
-                    nickname: string
-                    totalLike: number,
-                    totalComment: number,
-                    profileImage:string,
-                    tags: string[]
+                    id: string;
+                    userId: number;
+                    thumbnail: string;
+                    nickname: string;
+                    totalLike: number;
+                    totalComment: number;
+                    profileImage: string;
+                    tags: string[];
                 }
                 let creation: articleObject = {
                     id: article.id,
-                    userId:other||user,
+                    userId: other || user,
                     thumbnail: article.thumbnail,
                     nickname: userInfo.nickname,
                     totalLike: article.totalLike,
                     totalComment: article.totalComment,
-                    profileImage:userInfo.profileImage,
-                    tags: article.tags
+                    profileImage: userInfo.profileImage,
+                    tags: article.tags,
                 };
                 newArticles.push(creation);
             }
@@ -303,15 +321,15 @@ export class UsersService {
                         profileImage: userInfo.profileImage,
                         totalFollower: userInfo.totalFollower,
                         totalFollowing: userInfo.totalFollowing,
-                        followedOrNot: followedOrNot
+                        followedOrNot: followedOrNot,
                     },
-                    articles: newArticles
+                    articles: newArticles,
                 },
-                message: "ok"
-            }
+                message: 'ok',
+            };
         } catch (err) {
             console.error(err);
-            throw new NotFoundException("No Content")
+            throw new NotFoundException('No Content');
         }
     }
 }
