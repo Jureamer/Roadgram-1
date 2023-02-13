@@ -12,33 +12,48 @@ import { AppController } from './app.controller';
 import { LoggerMiddleware } from 'middlewares/logger.middlewars';
 import { WinstonModule, utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import * as winston from 'winston';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot(typeORMConfig),
-    UsersModule,
-    ArticlesModule,
-    SearchModule,
-    CommentsModule,
-    LikesModule,
-    FollowModule,
-    WinstonModule.forRoot({
-      transports: [
-        new winston.transports.Console({
-          level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
-          format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.timestamp(),
-            nestWinstonModuleUtilities.format.nestLike('MyApp', { prettyPrint: true })
-          ),
+    imports: [
+        ConfigModule.forRoot({
+            envFilePath: process.env.NODE_ENV === 'production' ? '.env' : '.env.development',
+            isGlobal: true,
         }),
-      ],
-    }),
-  ],
-  controllers: [AppController]
+        TypeOrmModule.forRoot({
+            type: 'mysql',
+            host: process.env.DATABASE_HOST,
+            port: +process.env.DATABASE_PORT,
+            username: process.env.DATABASE_USERNAME,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_NAME,
+            entities: ['dist/src/**/*.entity{.ts,.js}'],
+            synchronize: false,
+            logging: false,
+        }),
+        UsersModule,
+        ArticlesModule,
+        SearchModule,
+        CommentsModule,
+        LikesModule,
+        FollowModule,
+        WinstonModule.forRoot({
+            transports: [
+                new winston.transports.Console({
+                    level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+                    format: winston.format.combine(
+                        winston.format.colorize(),
+                        winston.format.timestamp(),
+                        nestWinstonModuleUtilities.format.nestLike('MyApp', { prettyPrint: true }),
+                    ),
+                }),
+            ],
+        }),
+    ],
+    controllers: [AppController],
 })
-export class AppModule implements NestModule { 
-  configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(LoggerMiddleware).forRoutes("*");
-  }
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer): any {
+        consumer.apply(LoggerMiddleware).forRoutes('*');
+    }
 }

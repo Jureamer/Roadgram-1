@@ -10,24 +10,21 @@ import { TagRepository } from 'src/articles/repositories/tag.repository';
 import { FollowRepository } from 'src/follow/repositories/follow.repository';
 import { LikesRepository } from 'src/likes/repositories/likes.repository';
 import { CommentRepository } from 'src/comments/repositories/comments.repository';
-require('dotenv').config();
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      UserRepository,
-      ArticleRepository,
-      ArticleToTagRepository,
-      TagRepository,
-      FollowRepository,
-      LikesRepository,
-      CommentRepository,
-    ]),
-    JwtModule.register({ secret: process.env.JWT_SECRET }),
-  ],
-  controllers: [UsersController],
-  providers: [
-    UsersService,
-  ]
+    imports: [
+        TypeOrmModule.forFeature([
+            UserRepository,
+            ArticleRepository,
+            ArticleToTagRepository,
+            TagRepository,
+            FollowRepository,
+            LikesRepository,
+            CommentRepository,
+        ]),
+        JwtModule.register({ secret: process.env.JWT_SECRET }),
+    ],
+    controllers: [UsersController],
+    providers: [UsersService],
 })
-export class UsersModule { }
+export class UsersModule {}
