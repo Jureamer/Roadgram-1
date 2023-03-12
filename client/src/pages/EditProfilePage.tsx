@@ -248,11 +248,7 @@ function EditProfilePage(): any {
         </div>
         <div className='editProfile_box_div'>
           <h3 className='editProfile_title'>이메일</h3>
-<<<<<<< HEAD
-          <div className='editProfile_email_div'>{userInfo.email}</div>
-=======
-          <div className='editProfile_email_div'>{auth.userInfo.email ? auth.userInfo.email : `kimcoding@gmail.com`}</div>
->>>>>>> c930e23 (Fix: 충돌 파일 병합)
+          <div className='editProfile_email_div'>{auth.userInfo.email?auth.userInfo.email:`kimcoding@gmail.com`}</div>
         </div>
 <<<<<<< HEAD
         {auth.userInfo.loginMethod===0?
