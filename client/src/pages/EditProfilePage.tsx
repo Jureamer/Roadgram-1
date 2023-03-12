@@ -175,7 +175,6 @@ function EditProfilePage(): any {
         { headers: { authorization: `${auth.accessToken}` } },
       )
       dispatch(updateUserInfo(response.data.data))
-      toast.success('회원정보가 수정되었습니다.')
       return navigate(`/userinfo?id=${auth.userInfo.id}`)
     } catch (err: any) {
       /* 401에러는 개발 완료되면 제외되도 되는 경우의 수라 나중에 개발 후에 제거해도 됨 */
@@ -196,7 +195,6 @@ function EditProfilePage(): any {
             { headers: { authorization: `${auth.accessToken}` } },
           )
           dispatch(updateUserInfo(response.data.data))
-          toast.success('회원정보가 수정되었습니다.')
           return navigate(`/userinfo?id=${auth.userInfo.id}`)
         } catch {
           dispatch(logout())
@@ -304,8 +302,75 @@ function EditProfilePage(): any {
           <button className="editProfile_submit_button1" type="button" onClick={submitHandler}>
             수정완료
           </button>
+          <div className="editProfile_box_div">
+            <h3 className="editProfile_title">상태메세지</h3>
+            <input
+              className="editProfile_message_input"
+              type="text"
+              placeholder="상태메세지"
+              onChange={e => inputValueHandler(e, 'statusMessage')}
+              defaultValue={editInform.statusMessage}
+            />
+          </div>
+          <div className="editProfile_box_div">
+            <h3 className="editProfile_title">닉네임</h3>
+            <div className="editProfile_nickname_box">
+              <input
+                className="editProfile_password_input"
+                type="text"
+                placeholder="닉네임"
+                onChange={e => inputValueHandler(e, 'nickname')}
+                defaultValue={editInform.nickname}
+              />
+              <button type="submit" className="editProfile_nickname_button" onClick={nicknameCheck}>
+                중복체크
+              </button>
+            </div>
+          </div>
+          <div className="editProfile_box_div">
+            <h3 className="editProfile_title">이메일</h3>
+            <div className="editProfile_email_div">
+              {auth.userInfo.email ? auth.userInfo.email : `kimcoding@gmail.com`}
+            </div>
+          </div>
+          <div className="editProfile_box_div">
+            <h3 className="editProfile_title">패스워드</h3>
+            <input
+              className="editProfile_password_input"
+              type="password"
+              placeholder="비밀번호"
+              onChange={e => inputValueHandler(e, 'password')}
+            />
+            {!passwordAvailability ? (
+              <span className="editProfile_password_span">비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.</span>
+            ) : (
+              <span> </span>
+            )}
+          </div>
+          <div className="editProfile_box_div">
+            <h3 className="editProfile_title">패스워드 확인</h3>
+            <input
+              className="editProfile_password_input"
+              type="password"
+              placeholder="비밀번호 확인"
+              onChange={e => inputValueHandler(e, 'passwordCheck')}
+            />
+            {!isPasswordSame ? (
+              <span className="editProfile_passwordCheck_span">비밀번호가 일치하지 않습니다.</span>
+            ) : (
+              <span> </span>
+            )}
+          </div>
+          <div className="editProfile_submit_div">
+            <button className="editProfile_submit_button" type="button" onClick={openWithdrawalModal}>
+              회원탈퇴
+            </button>
+            <button className="editProfile_submit_button1" type="button" onClick={submitHandler}>
+              수정완료
+            </button>
+          </div>
+          {isWithdrawalModal ? <WithdrawalModal /> : null}
         </div>
-        {isWithdrawalModal ? <WithdrawalModal /> : null}
       </div>
     </div>
   )
