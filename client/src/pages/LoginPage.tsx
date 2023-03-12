@@ -134,6 +134,45 @@ function LoginPage() {
           </div>
         </form>
       )}
+      <form className="login_main_div">
+        <h1 className="login_logo_title">로그인</h1>
+        <h3>이메일</h3>
+        <input
+          className="login_email_input"
+          type="text"
+          placeholder="이메일을 입력해주세요"
+          onChange={handleInputValue('email')}
+        />
+        <h3>비밀번호</h3>
+        <input
+          className="login_password_input"
+          type="password"
+          placeholder="비밀번호를 입력해주세요"
+          onChange={handleInputValue('password')}
+        />
+        <li
+          className="login_findpassword_button"
+          onClick={() => alert('비밀번호 찾기 서비스는 준비 중입니다.')}
+          onKeyDown={() => alert('비밀번호 찾기 서비스는 준비 중입니다.')}
+        >
+          비밀번호 찾기
+        </li>
+        <div className="button_div">
+          <button className="login_login_button" type="submit" onClick={event => loginHandler(event)}>
+            로그인
+          </button>
+          <button className="login_signup_button" type="button" onClick={redirectToSignup}>
+            회원가입
+          </button>
+          <img
+            className="login_kakao_button"
+            alt="kakaologin"
+            src={kakaoLogin}
+            onClick={kakaoHandler}
+            onKeyDown={kakaoHandler}
+          />
+        </div>
+      </form>
     </div>
   )
 }

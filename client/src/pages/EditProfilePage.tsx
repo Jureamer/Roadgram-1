@@ -160,13 +160,13 @@ function EditProfilePage(): any {
     if (editInform.profileImage) body.profileImage = editInform.profileImage;
     body.statusMessage = editInform.statusMessage;
     if (editInform.nickname&&editInform.nickname!==userInfo.nickname) {
-      if (editInform.nickname.length === 1 || editInform.nickname.length > 15) return toast.error("닉네임은 2~15자 이내로 입력바랍니다.");
-      if (!nicknameAvailability) return toast.error("닉네임 중복 여부를 확인 해 주시기 바랍니다.");
+      if (editInform.nickname.length === 1 || editInform.nickname.length > 15) return alert("닉네임은 2~15자 이내로 입력바랍니다.");
+      if (!nicknameAvailability) return alert("닉네임 중복 여부를 확인 해 주시기 바랍니다.");
       body.nickname = editInform.nickname;
     }
     if (editInform.password) {
-      if (!passwordAvailability) return toast.error("비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.");
-      if (editInform.password !== editInform.passwordCheck) return toast.error('비밀번호가 일치하지 않습니다.');
+      if (!passwordAvailability) return alert("비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.");
+      if (editInform.password !== editInform.passwordCheck) return alert('비밀번호가 일치하지 않습니다.');
       body.password = editInform.password;
     }
     /* api 요청 시작 */
@@ -248,8 +248,13 @@ function EditProfilePage(): any {
         </div>
         <div className='editProfile_box_div'>
           <h3 className='editProfile_title'>이메일</h3>
+<<<<<<< HEAD
           <div className='editProfile_email_div'>{userInfo.email}</div>
+=======
+          <div className='editProfile_email_div'>{auth.userInfo.email ? auth.userInfo.email : `kimcoding@gmail.com`}</div>
+>>>>>>> c930e23 (Fix: 충돌 파일 병합)
         </div>
+<<<<<<< HEAD
         {auth.userInfo.loginMethod===0?
           <div className='editProfile_box_div'>
             <h3 className='editProfile_title'>패스워드</h3>
@@ -263,6 +268,19 @@ function EditProfilePage(): any {
             {!isPasswordSame ? <span className='editProfile_passwordCheck_span'>비밀번호가 일치하지 않습니다.</span> : <span> </span>}
           </div>:null}
         <div className='editProfile_submit_div'> 
+=======
+        <div className='editProfile_box_div'>
+          <h3 className='editProfile_title'>패스워드</h3>
+          <input className='editProfile_password_input' type='password' placeholder='비밀번호' onChange={(e) => inputValueHandler(e, 'password')} />
+          {!passwordAvailability ? <span className='editProfile_password_span'>비밀번호는 영문, 숫자를 포함하여 8자 이상이어야 합니다.</span> : <span> </span>}
+        </div>
+        <div className='editProfile_box_div'>
+          <h3 className='editProfile_title'>패스워드 확인</h3>
+          <input className='editProfile_password_input' type='password' placeholder='비밀번호 확인' onChange={(e) => inputValueHandler(e, 'passwordCheck')} />
+          {!isPasswordSame ? <span className='editProfile_passwordCheck_span'>비밀번호가 일치하지 않습니다.</span> : <span> </span>}
+        </div>
+        <div className='editProfile_submit_div'>
+>>>>>>> 9adc58c (Fix editprofile page default value)
           <button className='editProfile_submit_button' type='button' onClick={openWithdrawalModal}>회원탈퇴</button>
           <button className='editProfile_submit_button1' type='button' onClick={submitHandler}>수정완료</button>
         </div>

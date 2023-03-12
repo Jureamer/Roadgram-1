@@ -9,18 +9,18 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
-  
+
   const config = new DocumentBuilder()
-  .setTitle('Roadgram')
-  .setDescription('Roadgram API Document')
-  .setVersion('1.0')
-  .addTag('roadgram')
-  .build();
+    .setTitle('Roadgram')
+    .setDescription('Roadgram API Document')
+    .setVersion('1.0')
+    .addTag('roadgram')
+    .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  
+
   SwaggerModule.setup('api', app, document, {
-    swaggerOptions: {defaultModelsExpandDepth: -1}
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
   });
 
   app.useGlobalPipes(
