@@ -1,5 +1,5 @@
-import { WinstonModule } from 'nest-winston';
 import { ConfigModule } from '@nestjs/config';
+import { MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,8 +9,12 @@ import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { FollowModule } from './follow/follow.module';
 import { AppController } from './app.controller';
+import { LoggerMiddleware } from 'middlewares/logger.middlewars';
+import {
+  WinstonModule,
+  utilities as nestWinstonModuleUtilities,
+} from 'nest-winston';
 import * as winston from 'winston';
-import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 
 @Module({
   imports: [
@@ -41,7 +45,6 @@ import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
         new winston.transports.Console({
           level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
           format: winston.format.combine(
-            winston.format.colorize(),
             winston.format.timestamp(),
             nestWinstonModuleUtilities.format.nestLike('MyApp', {
               prettyPrint: true,
@@ -53,4 +56,8 @@ import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

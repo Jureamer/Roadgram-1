@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, LoggerService, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from './users.controller';
 import { UserRepository } from './repositories/user.repository';
@@ -21,11 +21,13 @@ require('dotenv').config();
       TagRepository,
       FollowRepository,
       LikesRepository,
-      CommentRepository
+      CommentRepository,
     ]),
-    JwtModule.register({ secret: process.env.JWT_SECRET })
+    JwtModule.register({ secret: process.env.JWT_SECRET }),
   ],
   controllers: [UsersController],
-  providers: [UsersService]
+  providers: [
+    UsersService,
+  ]
 })
 export class UsersModule { }
