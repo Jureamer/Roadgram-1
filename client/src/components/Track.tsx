@@ -17,8 +17,8 @@ function Track() {
             return (
               <div key={road.imageSrc} className="track_marker_each_div">
                 <div className="track_marker_icon_div">
-                  <FontAwesomeIcon className="track_marker_icon" icon={faLocationDot} />
-                  <FontAwesomeIcon className="ellipsis_icon" icon={faEllipsisVertical} />
+                  <FontAwesomeIcon className="track_marker_icon" icon={['far', 'location-dot']} />
+                  <FontAwesomeIcon className="ellipsis_icon" icon={['far', 'ellipsis-vertical']} />
                 </div>
                 <div className="track_maker_name_div">
                   <span className="track_marker_placename">{road.placeName}</span>

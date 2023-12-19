@@ -86,12 +86,12 @@ function Navigator() {
           <img className="logo" alt="logoImg" src={logo} />
         </Link>
       </div> */}
-        <Link to="/main" style={{ textDecoration: 'none' }}>
-          <img className="logo" alt="logoImg" src={logo} />
-        </Link>
+      <Link to="/main" style={{ textDecoration: 'none' }}>
+        <img className="logo" alt="logoImg" src={logo} />
+      </Link>
       <div className="structure sideMenu">
         <PopularTag />
-        <FontAwesomeIcon icon={faCircleInfo} className="infoIcon" onClick={() => navigate('/')} />
+        <FontAwesomeIcon icon={['far', 'circle-info']} className="infoIcon" onClick={() => navigate('/')} />
         <div className="inputDiv">
           <input
             className="searchBar"
@@ -106,17 +106,34 @@ function Navigator() {
             value={word}
           />
           <Link to={`/search?tag=${word}`} style={{ textDecoration: 'none', color: 'rgb(80, 78, 78)' }}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} className="searchIcon" type="submit" onClick={convertToTag} />
+            <FontAwesomeIcon
+              icon={['far', 'magnifying-glass']}
+              className="searchIcon"
+              type="submit"
+              onClick={convertToTag}
+            />
           </Link>
         </div>
         {isLogin ? (
           <div>
             {/* <Link to="/settingroute" style={{ color: 'rgb(80, 78, 78)' }}> */}
-            <FontAwesomeIcon icon={faMessage} className="pencilIcon" onClick={() => navigate('/chat')} />
-            <FontAwesomeIcon icon={faPencil} className="pencilIcon" onClick={() => navigate('/settingroute')} />
+            <FontAwesomeIcon icon={['far', 'message']} className="pencilIcon" onClick={() => navigate('/chat')} />
+            <FontAwesomeIcon
+              icon={['far', 'pencil']}
+              className="pencilIcon"
+              onClick={() => navigate('/settingroute')}
+            />
             {/* </Link> */}
-            <FontAwesomeIcon icon={faBell} className="pencilIcon" onClick={() => alert('알림 기능은 현재 준비 중입니다.')}/>
-            <FontAwesomeIcon icon={faUser} className="userIcon" onClick={() => setUsericonCLick(!usericonClick)} />
+            <FontAwesomeIcon
+              icon={['far', 'bell']}
+              className="pencilIcon"
+              onClick={() => alert('알림 기능은 현재 준비 중입니다.')}
+            />
+            <FontAwesomeIcon
+              icon={['far', 'user']}
+              className="userIcon"
+              onClick={() => setUsericonCLick(!usericonClick)}
+            />
           </div>
         ) : (
           <Link to="/logins" style={{ textDecoration: 'none' }}>

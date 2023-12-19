@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 import axios from 'axios'
 import { RootState } from '..'
 import Tag from '../components/CreatePostPage/Tag'
@@ -15,17 +15,17 @@ import { resetCreatePost, setContent, setTagsInfo, setThumbnail } from '../store
 import UploadHold from '../components/CreatePostPage/UploadHold'
 
 function EditPostPage() {
-  const state = useSelector((state: RootState) => state);
-  const postInfo = useSelector((state: RootState) => state.createPost);
-  const {isLogin,userInfo, accessToken} = useSelector((state: RootState) => state.auth)
-  const {articleInfo, writerInfo} = useSelector((state: RootState) => state.articleDetails)
-  const { routeList } = useSelector((state:RootState) => state.routes);
-  const {content, tagsInfo, thumbnail} = postInfo;
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const state = useSelector((state: RootState) => state)
+  const postInfo = useSelector((state: RootState) => state.createPost)
+  const { isLogin, userInfo, accessToken } = useSelector((state: RootState) => state.auth)
+  const { articleInfo, writerInfo } = useSelector((state: RootState) => state.articleDetails)
+  const { routeList } = useSelector((state: RootState) => state.routes)
+  const { content, tagsInfo, thumbnail } = postInfo
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    document.documentElement.scrollTop=0; // 스크롤 초기화
+    document.documentElement.scrollTop = 0 // 스크롤 초기화
     // createpost slice 값 세팅
     setEditPage()
     // url에서 id값 추출
@@ -33,39 +33,37 @@ function EditPostPage() {
     const id: string | null = url.searchParams.get('id')
     // 첫 렌더링 시 유저 일치 여부 and 게시물 일치 여부 확인(state와 비교)
 
-    if(!isLogin){
-      toast.error('로그인이 필요한 서비스입니다.');
-      navigate('/logins');
-    }
-    else if(userInfo.id !== writerInfo.id ||Number(id) !== articleInfo.id ) {
-      toast.error("접근할 수 없는 경로입니다.")
+    if (!isLogin) {
+      toast.error('로그인이 필요한 서비스입니다.')
+      navigate('/logins')
+    } else if (userInfo.id !== writerInfo.id || Number(id) !== articleInfo.id) {
+      toast.error('접근할 수 없는 경로입니다.')
       navigate('/main')
     }
   }, [])
 
   const setEditPage = () => {
-    
     // 기존 포스트정보가 initialState 상태일때만 실행
     // 기존 정보가 있으면 editPage state를 다시 실행하지 않음
-    if(postInfo.content === "" && postInfo.thumbnail=== "" && tagsInfo.length === 0) {
+    if (postInfo.content === '' && postInfo.thumbnail === '' && tagsInfo.length === 0) {
       // 태그 재저장
-      const newTags: { order: number; tagName: string; }[] = []
+      const newTags: { order: number; tagName: string }[] = []
       articleInfo.tags.forEach((tag: string, idx: number) => {
         const newObj = {
           order: idx + 1,
-          tagName: tag
+          tagName: tag,
         }
-        newTags.push(newObj);
+        newTags.push(newObj)
       })
-      dispatch(setTagsInfo(newTags));
-    
+      dispatch(setTagsInfo(newTags))
+
       // 썸네일 재저장
-      dispatch(setThumbnail(articleInfo.thumbnail)); 
+      dispatch(setThumbnail(articleInfo.thumbnail))
       // content 재저장
-      dispatch(setContent(articleInfo.content));
+      dispatch(setContent(articleInfo.content))
       // roads 재저장
-      articleInfo.roads.forEach((road) => {
-        dispatch(addRouteList(road));
+      articleInfo.roads.forEach(road => {
+        dispatch(addRouteList(road))
       })
     }
   }
@@ -133,7 +131,7 @@ function EditPostPage() {
       <div className="createpost_whole_div">
         <div className="createpost_title_div">
           <div className="arrow_icon_div">
-            <FontAwesomeIcon icon={faArrowLeft} className="arrow_icon" onClick={() => cancelPost()} />
+            <FontAwesomeIcon icon={['far', 'arrow-left']} className="arrow_icon" onClick={() => cancelPost()} />
           </div>
           <h1>게시글 수정</h1>
           <span className="inform_span">※ 게시물 수정은 태그와 본문 수정만 가능합니다.</span>

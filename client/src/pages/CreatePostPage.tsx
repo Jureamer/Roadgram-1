@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 import axios from 'axios'
 import { RootState } from '..'
 import Tag from '../components/CreatePostPage/Tag'
@@ -23,14 +23,12 @@ function CreatePostPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-
   // 스크롤 초기화
-  useEffect(()=>{
-    document.documentElement.scrollTop=0;
-  },[]);
+  useEffect(() => {
+    document.documentElement.scrollTop = 0
+  }, [])
 
   const posting = () => {
-    
     if (tagsInfo.length === 0) {
       alert('게시물과 관련된 태그를 1개 이상 등록 해 주시기 바랍니다.')
       return
@@ -106,7 +104,7 @@ function CreatePostPage() {
         <div className="createpost_title_div">
           <div className="arrow_icon_div">
             <Link to="/settingroute">
-              <FontAwesomeIcon icon={faArrowLeft} className="arrow_icon" />
+              <FontAwesomeIcon icon={['far', 'arrow-left']} className="arrow_icon" />
             </Link>
           </div>
           <h1>게시글 작성</h1>

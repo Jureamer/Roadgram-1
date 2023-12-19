@@ -215,7 +215,7 @@ function EditProfilePage(): any {
         <div className="editProfile_title_box">
           <Link to={`/userinfo?id=${auth.userInfo.id}`}>
             <div className="editProfile_arrow_box">
-              <FontAwesomeIcon className="editProfile_arrow_icon" icon={faArrowLeft} />
+              <FontAwesomeIcon className="editProfile_arrow_icon" icon={['far', 'arrow-left']} />
             </div>
           </Link>
           <h1>내 정보 수정</h1>
@@ -223,11 +223,16 @@ function EditProfilePage(): any {
         <div className="editProfile_imageBox_div">
           <h3 className="editProfile_title">프로필 사진</h3>
           <label className="editProfile_image_label" htmlFor="editProfile_image_label">
-            <div className="editProfile_image_section">
-              <img className="editProfile_image_img" src={editInform.profileImage} alt="" />
+            <div id="editProfile_image_label" className="editProfile_image_section">
+              <img
+                id="editProfile_image_label"
+                className="editProfile_image_img"
+                src={editInform.profileImage}
+                alt=""
+              />
             </div>
-            <div className="editProfile_icon_section">
-              <FontAwesomeIcon icon={faCamera} className="cameraIcon" />
+            <div id="editProfile_image_label" className="editProfile_icon_section">
+              <FontAwesomeIcon id="editProfile_image_label" icon={['far', 'camera']} className="cameraIcon" />
             </div>
           </label>
           <input id="editProfile_image_label" className="hidden" accept="image/*" type="file" onChange={imageHandler} />

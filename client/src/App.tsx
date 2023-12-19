@@ -3,8 +3,8 @@ import React from 'react'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 
 /* Popup import */
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 /* CSS import */
 import './App.css'
@@ -56,7 +56,7 @@ function App() {
           pauseOnFocusLoss={false}
           draggable
           pauseOnHover={false}
-          />
+        />
       </BrowserRouter>
     </div>
   )

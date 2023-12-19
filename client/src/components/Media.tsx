@@ -44,8 +44,8 @@ function Media() {
       {isStaticMap ? <Map /> : null}
       {!isStaticMap && articleInfo.roads && articleInfo.roads.length > 0 ? (
         <>
-          <FontAwesomeIcon className="angleLeft" icon={faChevronCircleLeft} onClick={prevSlide} />
-          <FontAwesomeIcon className="angleRight" icon={faChevronCircleRight} onClick={nextSlide} />
+          <FontAwesomeIcon className="angleLeft" icon={['far', 'chevron-circle-left']} onClick={prevSlide} />
+          <FontAwesomeIcon className="angleRight" icon={['far', 'chevron-circle-right']} onClick={nextSlide} />
         </>
       ) : null}
       {articleInfo.roads && articleInfo.roads.length > 0 ? (
@@ -73,7 +73,7 @@ function Media() {
               return (
                 <FontAwesomeIcon
                   className={articleInfo.roads.indexOf(image) === current ? 'dot-active' : 'dot'}
-                  icon={faCircle}
+                  icon={['far', 'circle']}
                   onClick={() => moveDot(articleInfo.roads.indexOf(image))}
                 />
               )

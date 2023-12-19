@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCircleDot } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import AWS, { S3 } from 'aws-sdk'
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../..'
 import { setImages } from '../../store/RouteListSlice'
@@ -23,9 +23,9 @@ function Upload() {
     }
 
     // thumbnail state에 이미지 저장
-    dispatch(setThumbnail(imageSrc));
+    dispatch(setThumbnail(imageSrc))
     // thumnail index 저장
-    setSelectedIndex(index);
+    setSelectedIndex(index)
   }
 
   /* s3 버킷 설정 */
@@ -40,7 +40,7 @@ function Upload() {
     if (!routeImage) {
       // 이미지가 없으면 공백값 넣어줌
       // dispatch(setImages({idx, src: ""}));
-    } else {       
+    } else {
       const upload = new S3.ManagedUpload({
         params: {
           Bucket: 'ootd13image',
@@ -66,7 +66,7 @@ function Upload() {
               <label key={route.placeName} className="createpost_upload_route_label" htmlFor={`upload_image${idx}`}>
                 {route.imageSrc === '' || !route.imageSrc ? (
                   <div className="createpost_upload_route_img">
-                    <FontAwesomeIcon icon={faPlus} className="createpost_plusicon" />
+                    <FontAwesomeIcon icon={['far', 'plus']} className="createpost_plusicon" />
                   </div>
                 ) : (
                   <div className="createpost_upload_route_img">
@@ -87,7 +87,7 @@ function Upload() {
                   <>
                     <div className="selectBox">
                       <FontAwesomeIcon
-                        icon={faCircleDot}
+                        icon={['far', 'circle-dot']}
                         className="createpost_upload_route_thumbnail_checkbox"
                         type="checkbox"
                       />
@@ -99,7 +99,7 @@ function Upload() {
                   <>
                     <div className="selectBox">
                       <FontAwesomeIcon
-                        icon={faCircle}
+                        icon={['far', 'circle']}
                         className="createpost_upload_route_thumbnail_checkbox"
                         type="checkbox"
                         onClick={() => selectThumbnail(idx)}

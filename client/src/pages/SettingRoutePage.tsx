@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 import { faLocationDot, faMagnifyingGlass, faMinusCircle, faShoePrints } from '@fortawesome/free-solid-svg-icons'
-import { } from '@fortawesome/free-regular-svg-icons'
+import {} from '@fortawesome/free-regular-svg-icons'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders'
 import { RootState } from '..'
 import { getLocationList, deleteLocationList, locations, resetKaKao } from '../store/LocationListSlice'
-import { getRouteList, addRouteList, deleteMakerSelected, resetRouteList, dragMakerChange } from '../store/RouteListSlice'
+import {
+  getRouteList,
+  addRouteList,
+  deleteMakerSelected,
+  resetRouteList,
+  dragMakerChange,
+} from '../store/RouteListSlice'
 import { resetUserInfo } from '../store/UserInfoSlice'
 import markerImg from '../images/bluelocation.png'
 import line from '../images/line.png'
@@ -25,20 +31,20 @@ declare global {
 function SettingRoutePage() {
   const [word, setWord] = useState('') // 검색어 state
   const [createMarker, setCreateMarker] = useState(false) // 마커 생성여부 state
-  const [isSearch, setIsSearch] = useState("검색된 장소가 없습니다.") // 검색여부 state
-  const [dragIdx, setDragIdx] = useState(-1);
-  const [enterIdx, setEnterIdx] = useState(-1);
+  const [isSearch, setIsSearch] = useState('검색된 장소가 없습니다.') // 검색여부 state
+  const [dragIdx, setDragIdx] = useState(-1)
+  const [enterIdx, setEnterIdx] = useState(-1)
   const { locationList } = useSelector((state: RootState) => state.locations)
   const { routeList } = useSelector((state: RootState) => state.routes)
   const [coordinate, setCoordinate] = useState([37.56682, 126.97865])
-  const [isSelectLocation, setIsSelectLocation] = useState(false);
+  const [isSelectLocation, setIsSelectLocation] = useState(false)
   const dispatch = useDispatch()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   // 스크롤 초기화
-  useEffect(()=>{
-    document.documentElement.scrollTop=0;
-  },[])
+  useEffect(() => {
+    document.documentElement.scrollTop = 0
+  }, [])
 
   // 지도의 범위를 설정하는 함수를 불러온다
   const bounds = new window.kakao.maps.LatLngBounds()
@@ -57,13 +63,12 @@ function SettingRoutePage() {
   const markerImage = new window.kakao.maps.MarkerImage(markerImageUrl, markerImageSize, markerImageOptions)
 
   useEffect(() => {
-    createMap(coordinate);
+    createMap(coordinate)
   }, [locationList, routeList])
 
-  
   // 검색창(input 태그) 입력값 받아와서 'word' State에 저장
   const changeWord = (e: any) => {
-    setIsSearch("");
+    setIsSearch('')
     setWord(e.target.value)
   }
 
@@ -86,14 +91,12 @@ function SettingRoutePage() {
     }
   }
 
-  
-
   // 카카오맵을 생성하는 함수
   const createMap = (coordinate: Array<any>) => {
     // 바운스 함수
 
     const mapBounds = () => {
-      map.setBounds(bounds);
+      map.setBounds(bounds)
     }
     // 지도를 표시할 div
     const mapContainer = document.getElementById('map')
@@ -138,8 +141,8 @@ function SettingRoutePage() {
           </div>`,
         })
         // <div>${location.address_name}</div>
-        if(location.x === coordinate[1] && location.y === coordinate[0]) {
-          infowindow.open(map, marker);
+        if (location.x === coordinate[1] && location.y === coordinate[0]) {
+          infowindow.open(map, marker)
         }
 
         window.kakao.maps.event.addListener(marker, 'mouseover', function () {
@@ -159,8 +162,8 @@ function SettingRoutePage() {
           image: markerImage, // 마커의 이미지
           map, // 마커를 표시할 지도 객체
         })
-        
-        bounds.extend(new window.kakao.maps.LatLng(route.y, route.x));
+
+        bounds.extend(new window.kakao.maps.LatLng(route.y, route.x))
 
         const infowindow = new window.kakao.maps.InfoWindow({
           content: `
@@ -206,7 +209,7 @@ function SettingRoutePage() {
         })
         customOverlay.setMap(map) // 지도에 올린다.
       })
-      mapBounds();
+      mapBounds()
     }
     for (let i = 0; i < routeList.length; i += 1) {
       if (routeList[i]) {
@@ -246,64 +249,64 @@ function SettingRoutePage() {
 
   const deleteSelected = (idx: number) => {
     const newRouteList = routeList.filter((_, index) => idx !== index)
-    dispatch(deleteMakerSelected(newRouteList));
+    dispatch(deleteMakerSelected(newRouteList))
   }
 
   const resetPostInfo = () => {
-    dispatch(resetCreatePost());
-    dispatch(resetKaKao());
-    dispatch(resetRouteList());
+    dispatch(resetCreatePost())
+    dispatch(resetKaKao())
+    dispatch(resetRouteList())
   }
 
   const cancelPosting = () => {
-    if(window.confirm("취소하시면 작성하신 내용을 모두 잃게됩니다. 계속 하시겠습니까?")) {
-      resetPostInfo();
-      navigate('/main');
+    if (window.confirm('취소하시면 작성하신 내용을 모두 잃게됩니다. 계속 하시겠습니까?')) {
+      resetPostInfo()
+      navigate('/main')
     }
   }
 
   const moveToCreatePost = () => {
-    if(routeList.length > 0) {
-      navigate('/createpost');
+    if (routeList.length > 0) {
+      navigate('/createpost')
     } else {
-      toast.error("경로를 하나 이상 추가 해주시기 바랍니다.");
+      toast.error('경로를 하나 이상 추가 해주시기 바랍니다.')
     }
   }
 
   const dragStartHandler = (e: any, idx: number) => {
     // 드래그 idx 저장
-    console.log("drag 시작");
-    setDragIdx(idx);
-    e.dataTransfer.effectAllowed = 'move'; 
-  };
-  
-  const dragEnterHandler = (e:any, idx: number) => {
-    // 유효한 zone에 enter시 idx값 저장
-      setEnterIdx(idx); 
+    console.log('drag 시작')
+    setDragIdx(idx)
+    e.dataTransfer.effectAllowed = 'move'
   }
 
-  const dragEndHandler = (e:any) => {
-    if(dragIdx !== enterIdx) {
+  const dragEnterHandler = (e: any, idx: number) => {
+    // 유효한 zone에 enter시 idx값 저장
+    setEnterIdx(idx)
+  }
+
+  const dragEndHandler = (e: any) => {
+    if (dragIdx !== enterIdx) {
       // 드래그 idx값과 enter idx값이 다를 경우만 변경 처리
       const changeRouteList = [
         { idx: dragIdx, value: routeList[dragIdx] },
-        { idx: enterIdx, value: routeList[enterIdx]}
-      ];
-      dispatch(dragMakerChange(changeRouteList));
+        { idx: enterIdx, value: routeList[enterIdx] },
+      ]
+      dispatch(dragMakerChange(changeRouteList))
     }
-      // drag 관련 idx값 초기화
-      setDragIdx(-1)
-      setEnterIdx(-1);  
-  };
+    // drag 관련 idx값 초기화
+    setDragIdx(-1)
+    setEnterIdx(-1)
+  }
 
   const clickLocation = (location: any) => {
-      createMap([location.y, location.x]);
+    createMap([location.y, location.x])
   }
 
   return (
     <div id="settingRouteContainer">
       <div className="searchBox">
-      <h1>경로 설정</h1>
+        <h1>경로 설정</h1>
         <div className="inputBox">
           <input
             className="locationSearchBar"
@@ -316,23 +319,32 @@ function SettingRoutePage() {
             }}
             onChange={changeWord}
           />
-          <FontAwesomeIcon icon={faMagnifyingGlass} onClick={searching} className="searchIcon" />
+          <FontAwesomeIcon icon={['far', 'magnifying-glass']} onClick={searching} className="searchIcon" />
         </div>
         <div className="locationListBox">
-          {isSearch !== "" ? (
+          {isSearch !== '' ? (
             <div className="noplace">{isSearch}</div>
           ) : (
             <div>
               {locationList.map(location => {
                 return (
-                  <li className="locationBox" key={location.id} onClick={()=> clickLocation(location)} onKeyDown ={() => clickLocation(location)}>
+                  <li
+                    className="locationBox"
+                    key={location.id}
+                    onClick={() => clickLocation(location)}
+                    onKeyDown={() => clickLocation(location)}
+                  >
                     <div className="placeName">{location.place_name}</div>
                     <div className="addressName">{location.address_name}</div>
                     <div className="locationDiv">
                       <a className="locationAtag" href={location.place_url} target="_blank" rel="noreferrer">
-                        <button className="detailButton" type="button">상세보기</button>
+                        <button className="detailButton" type="button">
+                          상세보기
+                        </button>
                       </a>
-                      <button className="addButton" type="button" onClick={() => addRoute(location)}>장소추가</button>
+                      <button className="addButton" type="button" onClick={() => addRoute(location)}>
+                        장소추가
+                      </button>
                     </div>
                   </li>
                 )
@@ -341,43 +353,67 @@ function SettingRoutePage() {
           )}
         </div>
         <div className="buttonDiv">
-          <button className="cancelButton" type="button" onClick={cancelPosting}>작성 취소</button>
-          <button className="nextButton" type="button" onClick={moveToCreatePost}>다음 페이지</button>
+          <button className="cancelButton" type="button" onClick={cancelPosting}>
+            작성 취소
+          </button>
+          <button className="nextButton" type="button" onClick={moveToCreatePost}>
+            다음 페이지
+          </button>
         </div>
       </div>
       <div className="mapBox">
         <div id="map" className="kakaomap" />
 
-        <div className={`${routeList.length === 0 ? "selectedRouteBox_hidden" : "selectedRouteBox"}`}>
-        {routeList.length > 0 
-          ? routeList.map((route, idx) => {
-            return (
-              <>
-              <div className={`${enterIdx === idx ? "marker_div convex" : "marker_div"}`}>
-                <div 
-                  draggable="true" 
-                  className="marker_img_div"
-                  onDragStart={(e) => {dragStartHandler(e, idx)}}
-                  onDragEnter={(e) => {dragEnterHandler(e, idx)}}
-                  onDragEnd={(e) => {dragEndHandler(e)}}
-                >
-                <FontAwesomeIcon 
-                  className="markerImg" 
-                  icon={faLocationDot} 
-                  onClick={() => {deleteSelected(idx)}} 
-                />
-                <FontAwesomeIcon className="cancelImg" icon={faMinusCircle} onClick={() => {deleteSelected(idx)}}/>
-                </div>
-                <span className="marker_span">{route.placeName}</span>
-              </div>
-              <div className={idx === routeList.length -1 ? "footstep_div hidden" : "footstep_div"}>
-                <FontAwesomeIcon className={idx === routeList.length -1 ? "footstep hidden" : "footstep"} icon={faShoePrints} />
-                <FontAwesomeIcon className={idx === routeList.length -1 ? "footstep hidden" : "footstep"} icon={faShoePrints} />
-              </div>
-              </>
-            )}) 
-          : null
-        }
+        <div className={`${routeList.length === 0 ? 'selectedRouteBox_hidden' : 'selectedRouteBox'}`}>
+          {routeList.length > 0
+            ? routeList.map((route, idx) => {
+                return (
+                  <>
+                    <div className={`${enterIdx === idx ? 'marker_div convex' : 'marker_div'}`}>
+                      <div
+                        draggable="true"
+                        className="marker_img_div"
+                        onDragStart={e => {
+                          dragStartHandler(e, idx)
+                        }}
+                        onDragEnter={e => {
+                          dragEnterHandler(e, idx)
+                        }}
+                        onDragEnd={e => {
+                          dragEndHandler(e)
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          className="markerImg"
+                          icon={['far', 'location-dot']}
+                          onClick={() => {
+                            deleteSelected(idx)
+                          }}
+                        />
+                        <FontAwesomeIcon
+                          className="cancelImg"
+                          icon={['far', 'minus-circle']}
+                          onClick={() => {
+                            deleteSelected(idx)
+                          }}
+                        />
+                      </div>
+                      <span className="marker_span">{route.placeName}</span>
+                    </div>
+                    <div className={idx === routeList.length - 1 ? 'footstep_div hidden' : 'footstep_div'}>
+                      <FontAwesomeIcon
+                        className={idx === routeList.length - 1 ? 'footstep hidden' : 'footstep'}
+                        icon={['far', 'shoe-prints']}
+                      />
+                      <FontAwesomeIcon
+                        className={idx === routeList.length - 1 ? 'footstep hidden' : 'footstep'}
+                        icon={['far', 'shoe-prints']}
+                      />
+                    </div>
+                  </>
+                )
+              })
+            : null}
         </div>
       </div>
     </div>

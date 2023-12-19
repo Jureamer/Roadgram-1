@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { faCommentDots, faEye, faHeart } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMainArticles } from '../store/ArticleSlice'
 import { RootState } from '..'
 import { detailInfo } from '../store/ArticleDetailSlice'
 import { resetCreatePost } from '../store/createPostSlice'
@@ -54,7 +52,7 @@ function Article() {
       ) : (
         <div id="mainContainer">
           {mainArticles.map(article => {
-          return (
+            return (
               <div className="postBox" key={article.id}>
                 <img
                   src={article.thumbnail}
@@ -99,11 +97,11 @@ function Article() {
                     21231
                   </button>
                   <div className="iconBox">
-                    <FontAwesomeIcon className="mainIcon_eye" icon={faEye} />
+                    <FontAwesomeIcon className="mainIcon_eye" icon={['far', 'eye']} />
                     <div className="like">{article.hits || 0}</div>
-                    <FontAwesomeIcon className="mainIcon_heart" icon={faHeart} />
+                    <FontAwesomeIcon className="mainIcon_heart" icon={['far', 'heart']} />
                     <div className="like">{article.totalLike || 0}</div>
-                    <FontAwesomeIcon className="mainIcon_comment" icon={faCommentDots} />
+                    <FontAwesomeIcon className="mainIcon_comment" icon={['far', 'comment-dots']} />
                     <div className="reply">{article.totalComment || 0}</div>
                   </div>
                 </div>
